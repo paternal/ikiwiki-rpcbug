@@ -12,7 +12,8 @@ from proxy import IkiWikiProcedureProxy
 
 def preprocess(proxy, *args):
     """Process ikiwiki directive ``[[!rpcbug]]``."""
-    return proxy.rpc("srcfile", "bar")
+    proxy.rpc("srcfile", "bar")
+    return "FOO"
 
 def _to_dict(args):
     """Return arguments, as given by Ikiwiki, as a dictionary.
