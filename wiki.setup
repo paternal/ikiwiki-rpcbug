@@ -1,0 +1,124 @@
+#!/usr/bin/perl
+#
+# Setup file for ikiwiki.
+# 
+# Passing this to ikiwiki --setup will make ikiwiki generate
+# wrappers and build the wiki.
+# 
+# Remember to re-run ikiwiki --setup any time you edit this file.
+
+use File::Basename;
+use File::Spec;
+use constant {
+    SRC => dirname(File::Spec->rel2abs( __FILE__ )),
+    DST => "$ENV{'HOME'}/public_html/ikiwiki_bug_rpc",
+    WWW => "http://localhost/~$ENV{'USERNAME'}/ikiwiki_bug_rpc",
+};
+
+use IkiWiki::Setup::Standard {
+# name of the wiki
+wikiname => "RPC Bug",
+# contact email for wiki
+adminemail => 'admin@example.com',
+# users who are wiki admins
+adminuser => [qw(ikiwiki)],
+# users who are banned from the wiki
+banned_users => [],
+# where the source of the wiki is located
+srcdir => SRC,
+# where to build the wiki
+destdir => DST,
+# base url to the wiki
+url => WWW,
+# url to the ikiwiki.cgi
+cgiurl => WWW . "/ikiwiki.cgi",
+# filename of cgi wrapper to generate
+cgi_wrapper => DST . "/ikiwiki.cgi",
+# mode for cgi_wrapper (can safely be made suid)
+cgi_wrappermode => 06755,
+# number of seconds to delay CGI requests when overloaded
+cgi_overload_delay => '',
+# message to display when overloaded (may contain html)
+cgi_overload_message => '',
+# rcs backend to use
+rcs => "git",
+# plugins to add to the default configuration
+add_plugins => [qw(rpcbug)],
+# plugins to disable
+#disable_plugins => [qw(editpage htmlscrubber recentchanges)],
+# additional directory to search for template files
+#templatedir => "/usr/share/ikiwiki/templates",
+# base wiki source location
+#underlaydir => "/usr/share/ikiwiki/basewiki",
+# display verbose messages?
+#verbose => 1,
+# log to syslog?
+#syslog => 1,
+# create output files named page/index.html?
+usedirs => 1,
+# use '!'-prefixed preprocessor directives?
+prefix_directives => 1,
+# use page/index.mdwn source files
+indexpages => 0,
+# enable Discussion pages?
+discussion => 0,
+# name of Discussion pages
+discussionpage => "Discussion",
+# generate HTML5?
+html5 => 1,
+# only send cookies over SSL connections?
+sslcookie => 0,
+# extension to use for new pages
+default_pageext => "mdwn",
+# extension to use for html files
+htmlext => "html",
+# strftime format string to display date
+timeformat => '%d/%m/%G',
+# UTF-8 locale to use
+locale => "fr_FR.UTF-8",
+# put user pages below specified page
+userdir => '',
+# how many backlinks to show before hiding excess (0 to show all)
+numbacklinks => 10,
+# attempt to hardlink source files? (optimisation for large files)
+hardlink => 1,
+# force ikiwiki to use a particular umask (keywords public, group or private, or a number)
+#umask: public
+# group for wrappers to run in
+#wrappergroup: ikiwiki
+# extra library and plugin directory
+libdirs => [
+  SRC,
+],
+# environment variables
+ENV => {},
+# time zone name
+timezone => "Europe/Paris",
+# regexp of normally excluded files to include
+#include: ^\.htaccess$
+# regexp of files that should be skipped
+#exclude: ^(*\.private|Makefile)$
+# specifies the characters that are allowed in source filenames
+wiki_file_chars => '-[:alnum:]+/.:_',
+# allow symlinks in the path leading to the srcdir (potentially insecure)
+allow_symlinks_before_srcdir => 0,
+
+# git plugin
+# git hook to generate
+#git_wrapper: /home/prof/2013-2014PabloNerudaSecondesD.git/hooks/post-update
+# shell command for git_wrapper to run, in the background
+#git_wrapper_background_command: git push github
+# mode for git_wrapper (can safely be made suid)
+#git_wrappermode: 06755
+# git pre-receive hook to generate
+#git_test_receive_wrapper: /git/wiki.git/hooks/pre-receive
+# unix users whose commits should be checked by the pre-receive hook
+#untrusted_committers: []
+# gitweb url to show file history ([[file]] substituted)
+#historyurl: http://git.example.com/gitweb.cgi?p=wiki.git;a=history;f=[[file]];hb=HEAD
+# gitweb url to show a diff ([[file]], [[sha1_to]], [[sha1_from]], [[sha1_commit]], and [[sha1_parent]] substituted)
+#diffurl: http://git.example.com/gitweb.cgi?p=wiki.git;a=blobdiff;f=[[file]];h=[[sha1_to]];hp=[[sha1_from]];hb=[[sha1_commit]];hpb=[[sha1_parent]]
+# where to pull and push changes (set to empty string to disable)
+gitorigin_branch => "",
+
+};

@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+
+__name__ = "rpcbug"
+__description__ = 'Dummy plugin highlighting a bug in ikiwiki RPC'
+__version__ = '0.1'
+__author__ = 'Louis Paternault <spalax@gresille.org>'
+__copyright__ = 'Copyright © ' + __author__
+__licence__ = 'GPL version 3 or later'
+
+from proxy import IkiWikiProcedureProxy
+
+def preprocess(proxy, *args):
+    """Process ikiwiki directive ``[[!rpcbug]]``."""
+    return proxy.rpc("srcfile", "foo")
+
+def _to_dict(args):
+    """Return arguments, as given by Ikiwiki, as a dictionary.
+
+    args is a list paired by key, value, so we turn it into a dict
+    """
+    return dict((k, v) for k, v in zip(*[iter(args)]*2))
+
+def getsetup(proxy, *args):
+    """Set default setup for this plugin."""
+    # pylint: disable=unused-argument
+    return 'plugin', {'safe' : 1, 'rebuild' : 1, 'section' : 'format'}
+
+def checkconfig(proxy, *args):
+    """Check plugin configuration."""
+    # pylint: disable=unused-argument
+    if proxy.rpc("getvar", "config", "verbose") is None:
+        LOGGER.setLevel(logging.WARNING)
+    else:
+        LOGGER.setLevel(logging.INFO)
+
+def format(proxy, *args):
+    kwargs = _to_dict(args)
+    return kwargs['content']
+
+# pylint: disable=invalid-name
+ikiproxy = IkiWikiProcedureProxy(__name__, debug_fn=None)
+ikiproxy.evariste_pages = set()
+ikiproxy.hook('getsetup', getsetup)
+ikiproxy.hook('preprocess', preprocess)
+ikiproxy.hook('format', format)
+ikiproxy.run()
