@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 __name__ = "rpcbug"
 __description__ = 'Dummy plugin highlighting a bug in ikiwiki RPC'
 __version__ = '0.1'
@@ -12,8 +11,10 @@ from proxy import IkiWikiProcedureProxy
 
 def preprocess(proxy, *args):
     """Process ikiwiki directive ``[[!rpcbug]]``."""
-    proxy.rpc("srcfile", "bar")
-    return "FOO"
+    text = ""
+    text += "<br/>* Calling `srcfile(foo)`: " + proxy.rpc("srcfile", "foo")
+    text += "<br/>* Calling `srcfile(README.md)`: " + proxy.rpc("srcfile", "README.md")
+    return text
 
 def _to_dict(args):
     """Return arguments, as given by Ikiwiki, as a dictionary.
@@ -38,6 +39,32 @@ def checkconfig(proxy, *args):
 def format(proxy, *args):
     kwargs = _to_dict(args)
     return kwargs['content']
+
+def debug(*args, **kwargs):
+    """Print debugging information."""
+    import inspect
+    import sys
+    frame = inspect.getouterframes(inspect.currentframe())[1]
+    sys.stderr.write("{module}:{line}:{function}:".format(
+        module=__name__,
+        line=frame[3],
+        function=frame[2],
+        ))
+    if args:
+        sys.stderr.write(" {args}\n".format(
+            args=" ".join([str(item) for item in args]),
+            ))
+    if kwargs:
+        sys.stderr.write(" {{{kwargs}}}\n".format(
+            kwargs=", ".join([
+                "'{key}': '{value}'".format(str(key), str(value))
+                for (key, value)
+                in kwargs.items()
+                ])
+            ))
+    if not (args or kwargs):
+        sys.stderr.write("\n")
+    sys.stderr.flush()
 
 # pylint: disable=invalid-name
 ikiproxy = IkiWikiProcedureProxy(__name__, debug_fn=None)
